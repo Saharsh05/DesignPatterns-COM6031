@@ -9,16 +9,19 @@ class FileSystemNode(ABC):
 
     @abstractmethod
     def size(self) -> int:
-
+        pass
     @abstractmethod
     def count_files(self) -> int:
+        pass
 
     @abstractmethod
     def find(self, name: str) -> "FileSystemNode | None":
+        pass
 
     @abstractmethod
     def display(self, indent: int = 0) -> None:
         """Print an indented tree view rooted at this node."""
+        pass
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}({self.name!r}, {self.size()} B)"
