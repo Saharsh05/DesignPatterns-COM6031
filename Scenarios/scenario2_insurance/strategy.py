@@ -71,7 +71,7 @@ def main() -> None:
     print()
     broadcast(entities, 1000, 1200)
 
-    print("\nAlice becomes loyal (strategy swapped at runtime):")
+    print("\nSaharsh becomes loyal (strategy swapped at runtime):")
     saharsh.set_strategy(Loyal())
     broadcast(entities, 1000, 1200)
 
