@@ -81,7 +81,7 @@ def main() -> None:
     ticket.resolve()
 
     print("\n Illegal action is rejected by the current state ")
-    ticket.assign()        # cannot assign once Resolved
+    ticket.assign()       
 
     print("\n Reopen then resolve again ")
     ticket.reopen()
