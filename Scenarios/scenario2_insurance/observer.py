@@ -1,7 +1,21 @@
+"""Scenario 2 - Candidate 1: OBSERVER  (notification mechanism only)
+
+Intent (GoF): define a one-to-many dependency so that when one object changes
+state, all its dependents are notified and updated automatically.
+
+Participants:
+  * Subject          -> InsurancePolicy (maintains observers, broadcasts change)
+  * Observer         -> PremiumObserver  (the update() interface)
+  * ConcreteObserver -> Customer, Regulator, Broker, Actuary
+  """
+
+
+
 from abc import ABC, abstractmethod
 
 
 class PremiumObserver(ABC):
+    """Abstract observer that reacts to premium changes."""
 
     @abstractmethod
     def update(self, old: float, new: float) -> None: ...
@@ -11,6 +25,7 @@ class PremiumObserver(ABC):
 
 
 class InsurancePolicy:
+    """Subject in the Observer pattern that notifies subscribed observers."""
 
     def __init__(self, premium: float) -> None:
         self._premium = float(premium)
@@ -44,6 +59,7 @@ class InsurancePolicy:
 
 
 class Customer(PremiumObserver):
+    """Customer observer that decides whether to stay or cancel."""
 
     def update(self, old: float, new: float) -> None:
         verdict = "cancels" if new > old * 1.10 else "stays"
@@ -51,12 +67,14 @@ class Customer(PremiumObserver):
 
 
 class Regulator(PremiumObserver):
+    """Regulator observer that logs premium changes."""
 
     def update(self, old: float, new: float) -> None:
         print(f"  Regulator: logged rate change {old:.0f}->{new:.0f}")
 
 
 class Broker(PremiumObserver):
+    """Broker observer that recalculates commission."""
 
     def update(self, old: float, new: float) -> None:
         commission = (new - old) * 0.05
@@ -64,6 +82,7 @@ class Broker(PremiumObserver):
 
 
 class Actuary(PremiumObserver):
+    """Actuary observer that flags large premium swings."""
 
     def update(self, old: float, new: float) -> None:
         swing = abs(new - old) / old if old else 0.0
