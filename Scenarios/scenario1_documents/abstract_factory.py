@@ -1,17 +1,36 @@
+"""Scenario 1 - Candidate 2: ABSTRACT FACTORY  (considered, not chosen)
+
+Intent (GoF): provide an interface for creating FAMILIES of related or dependent
+objects without specifying their concrete classes.
+
+Participants:
+  * AbstractFactory  -> DocumentSuiteFactory
+  * ConcreteFactory  -> PdfSuiteFactory, WebSuiteFactory, MobileSuiteFactory
+  * AbstractProducts -> Document, Stylesheet, Metadata
+  * ConcreteProducts -> Pdf*/Web*/Mobile* variants that must be used together
+  """
+
+
 from abc import ABC, abstractmethod
 
 
 class Document(ABC):
+    """Abstract product interface for document rendering."""
+
     @abstractmethod
     def render(self, content: str) -> str: ...
 
 
 class Stylesheet(ABC):
+    """Abstract product interface for stylesheet description."""
+
     @abstractmethod
     def describe(self) -> str: ...
 
 
 class Metadata(ABC):
+    """Abstract product interface for metadata type information."""
+
     @abstractmethod
     def mime_type(self) -> str: ...
 
@@ -119,6 +138,7 @@ def build_suite(factory: DocumentSuiteFactory, content: str) -> str:
     document = factory.create_document()
     stylesheet = factory.create_stylesheet()
     metadata = factory.create_metadata()
+    # Each concrete factory returns a matching family of products.
     return (f"{document.render(content)}\n"
             f"      styles: {stylesheet.describe()}\n"
             f"      type  : {metadata.mime_type()}")

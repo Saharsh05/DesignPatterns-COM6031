@@ -1,10 +1,23 @@
+"""Scenario 1 - Candidate 3: BUILDER  (considered, not chosen)
+
+Intent (GoF): separate the construction of a complex object from its
+representation so that the same construction process can create different
+representations.
+
+Participants:
+  * Product   -> Document (a complex object with many optional parts)
+  * Builder   -> DocumentBuilder (fluent, step-by-step assembly)
+  * Director  -> ReportDirector (encapsulates reusable build recipes)
+  """
+
+
 from __future__ import annotations
 from dataclasses import dataclass, field
 
 
 @dataclass
 class Section:
-    
+    """A single document section with a heading and body."""
 
     heading: str
     body: str
@@ -15,7 +28,7 @@ class Section:
 
 @dataclass
 class Document:
-
+    """Product built by the DocumentBuilder."""
 
     title: str = ""
     author: str = ""
@@ -38,7 +51,7 @@ class Document:
 
 
 class DocumentBuilder:
-
+    """Builder that assembles a Document step by step."""
 
     def __init__(self) -> None:
         self._doc = Document()
@@ -72,7 +85,7 @@ class DocumentBuilder:
 
 
 class ReportDirector:
-
+    """Director with recipes for common document variants."""
 
     @staticmethod
     def standard_report(builder: DocumentBuilder) -> Document:

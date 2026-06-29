@@ -1,15 +1,28 @@
+"""Scenario 1 - Candidate 1: FACTORY METHOD  (CHOSEN)
+
+Intent (GoF): define an interface for creating an object, but let subclasses
+decide which class to instantiate. Factory Method lets a class defer
+instantiation to its subclasses.
+
+Participants:
+  * Product          -> Document          (interface common to all documents)
+  * ConcreteProduct  -> PdfDocument, WordDocument, MarkdownDocument, HtmlDocument
+  * Creator          -> DocumentExporter  (declares the factory method and holds
+                        the real export() business logic)
+  * ConcreteCreator  -> PdfExporter, WordExporter, MarkdownExporter, HtmlExporter
+"""
+
 from abc import ABC, abstractmethod
 
 
 class Document(ABC):
-
+    """Abstract product for a specific document format."""
 
     #: File extension associated with this document type.
     extension: str = ""
 
     @abstractmethod
     def render(self, content: str) -> str:
-
         raise NotImplementedError
 
     def __repr__(self) -> str:
@@ -53,22 +66,22 @@ class HtmlDocument(Document):
 
 
 class DocumentExporter(ABC):
-
+    """Abstract creator defining a factory method for document creation."""
 
     @abstractmethod
     def create_document(self) -> Document:
-
         raise NotImplementedError
 
     def export(self, content: str) -> str:
-
         if not content or not content.strip():
             raise ValueError("content must be a non-empty string")
-        document = self.create_document()        # creation is delegated
+
+        # Delegate document creation to the concrete subclass.
+        document = self.create_document()
         return document.render(content)
 
     def export_filename(self, stem: str) -> str:
-
+        # The concrete document determines the extension used in the filename.
         return f"{stem}{self.create_document().extension}"
 
 
@@ -94,7 +107,7 @@ class MarkdownExporter(DocumentExporter):
 
 
 class HtmlExporter(DocumentExporter):
-    """Concrete Creator returning an HtmlDocument."""
+    """Concrete creator returning an HtmlDocument."""
 
     def create_document(self) -> Document:
         return HtmlDocument()
@@ -111,6 +124,7 @@ EXPORTERS: dict[str, type[DocumentExporter]] = {
 
 
 def export_document(fmt: str, content: str) -> str:
+    """Factory client entry point: instantiate the exporter from the registry."""
 
     try:
         exporter = EXPORTERS[fmt]()
