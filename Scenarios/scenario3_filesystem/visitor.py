@@ -1,3 +1,16 @@
+"""Scenario 3 - Candidate 3: VISITOR  (considered, not chosen)
+
+Intent (GoF): represent an operation to be performed on the elements of an object
+structure. Visitor lets you define a new operation without changing the classes
+of the elements on which it operates.
+
+Participants:
+  * Visitor          -> Visitor (visit_file / visit_directory)
+  * ConcreteVisitor  -> SizeVisitor, FileCountVisitor, ListingVisitor, LargestFileVisitor
+  * Element          -> Node (accept())
+  * ConcreteElement  -> File, Directory
+"""
+
 from __future__ import annotations
 from abc import ABC, abstractmethod
 
