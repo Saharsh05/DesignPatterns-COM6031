@@ -3,6 +3,11 @@ from abc import ABC, abstractmethod
 
 
 class FileSystemNode(ABC):
+    """Abstract component for a file system node.
+
+    This is the common interface for both leaf nodes (File)
+    and composite nodes (Directory).
+    """
 
     def __init__(self, name: str) -> None:
         self.name = name
@@ -10,6 +15,7 @@ class FileSystemNode(ABC):
     @abstractmethod
     def size(self) -> int:
         pass
+
     @abstractmethod
     def count_files(self) -> int:
         pass
@@ -28,6 +34,7 @@ class FileSystemNode(ABC):
 
 
 class File(FileSystemNode):
+    """Leaf node representing a single file."""
 
     def __init__(self, name: str, size_bytes: int) -> None:
         super().__init__(name)
@@ -42,6 +49,7 @@ class File(FileSystemNode):
         return 1
 
     def find(self, name: str) -> FileSystemNode | None:
+        # A file only matches itself.
         return self if self.name == name else None
 
     def display(self, indent: int = 0) -> None:
@@ -49,6 +57,7 @@ class File(FileSystemNode):
 
 
 class Directory(FileSystemNode):
+    """Composite node that contains files and/or child directories."""
 
     def __init__(self, name: str) -> None:
         super().__init__(name)
@@ -56,15 +65,17 @@ class Directory(FileSystemNode):
 
     def add(self, node: FileSystemNode) -> Directory:
         self._children.append(node)
-        return self                               # fluent for easy building
+        return self  # fluent API for easy tree construction
 
     def remove(self, node: FileSystemNode) -> None:
         self._children.remove(node)
 
     def size(self) -> int:
-        return sum(child.size() for child in self._children)       # recursion
+        # Directory size is the sum of all contained nodes.
+        return sum(child.size() for child in self._children)
 
     def count_files(self) -> int:
+        # Count files recursively across the subtree.
         return sum(child.count_files() for child in self._children)
 
     def find(self, name: str) -> FileSystemNode | None:
@@ -83,7 +94,7 @@ class Directory(FileSystemNode):
 
 
 def report(node: FileSystemNode) -> None:
-    """Client code that treats a leaf and a whole tree identically."""
+    """Client code that treats both files and directories uniformly."""
     print(f"  {node.name}: {node.size()} B, {node.count_files()} file(s)")
 
 
@@ -102,8 +113,8 @@ def main() -> None:
     root.display()
 
     print("\nUniform treatment of leaf vs composite")
-    report(root.find("main.py"))     # a leaf
-    report(root)                     # the whole tree
+    report(root.find("main.py"))  # a leaf
+    report(root)  # the whole tree
 
     print("\nRemoving a sub-tree updates totals automatically")
     root.remove(src)

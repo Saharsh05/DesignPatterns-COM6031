@@ -2,14 +2,20 @@ from abc import ABC, abstractmethod
 
 
 class FileSystemNode(ABC):
+    """Base interface for file system nodes.
+
+    Both concrete files and decorator wrappers implement this.
+    """
 
     @abstractmethod
     def size(self) -> int: ...
+
     @abstractmethod
     def describe(self) -> str: ...
 
 
 class File(FileSystemNode):
+    """A simple file node with a fixed size."""
 
     def __init__(self, name: str, size_bytes: int) -> None:
         self.name = name
@@ -23,6 +29,7 @@ class File(FileSystemNode):
 
 
 class NodeDecorator(FileSystemNode):
+    """Base decorator that forwards calls to the wrapped node."""
 
     def __init__(self, wrapped: FileSystemNode) -> None:
         self._wrapped = wrapped
@@ -35,6 +42,7 @@ class NodeDecorator(FileSystemNode):
 
 
 class Compressed(NodeDecorator):
+    """Decorator that compresses a node, reducing its reported size."""
 
     def __init__(self, wrapped: FileSystemNode, ratio: float = 0.4) -> None:
         super().__init__(wrapped)
@@ -48,6 +56,7 @@ class Compressed(NodeDecorator):
 
 
 class Encrypted(NodeDecorator):
+    """Decorator that adds encryption overhead."""
 
     def size(self) -> int:
         return self._wrapped.size() + 16
@@ -57,12 +66,14 @@ class Encrypted(NodeDecorator):
 
 
 class ReadOnly(NodeDecorator):
+    """Decorator that marks a node as read-only."""
 
     def describe(self) -> str:
         return f"read-only({self._wrapped.describe()})"
 
 
 class Versioned(NodeDecorator):
+    """Decorator that multiplies stored size by version count."""
 
     def __init__(self, wrapped: FileSystemNode, versions: int = 3) -> None:
         super().__init__(wrapped)

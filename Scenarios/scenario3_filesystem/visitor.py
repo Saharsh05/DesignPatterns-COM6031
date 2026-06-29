@@ -3,29 +3,37 @@ from abc import ABC, abstractmethod
 
 
 class Visitor(ABC):
+    """Visitor interface for operations over file system nodes."""
 
     @abstractmethod
     def visit_file(self, file: "File") -> None: ...
+
     @abstractmethod
     def visit_directory(self, directory: "Directory") -> None: ...
 
 
 class Node(ABC):
+    """Abstract element in the object structure."""
 
     @abstractmethod
     def accept(self, visitor: Visitor) -> None: ...
 
 
 class File(Node):
+    """Leaf element representing a file."""
+
     def __init__(self, name: str, size_bytes: int) -> None:
         self.name = name
         self.size_bytes = size_bytes
 
     def accept(self, visitor: Visitor) -> None:
+        # A file accepts a visitor and delegates to visit_file.
         visitor.visit_file(self)
 
 
 class Directory(Node):
+    """Composite element holding child nodes."""
+
     def __init__(self, name: str) -> None:
         self.name = name
         self.children: list[Node] = []
@@ -35,12 +43,14 @@ class Directory(Node):
         return self
 
     def accept(self, visitor: Visitor) -> None:
+        # Visit the directory itself, then recursively visit children.
         visitor.visit_directory(self)
         for child in self.children:
             child.accept(visitor)
 
 
 class SizeVisitor(Visitor):
+    """Visitor that sums the total size of all files."""
 
     def __init__(self) -> None:
         self.total = 0
@@ -49,10 +59,12 @@ class SizeVisitor(Visitor):
         self.total += file.size_bytes
 
     def visit_directory(self, directory: Directory) -> None:
+        # No size contribution from directories themselves.
         pass
 
 
 class FileCountVisitor(Visitor):
+    """Visitor that counts file nodes."""
 
     def __init__(self) -> None:
         self.files = 0
@@ -61,10 +73,12 @@ class FileCountVisitor(Visitor):
         self.files += 1
 
     def visit_directory(self, directory: Directory) -> None:
+        # Directories are not counted as files.
         pass
 
 
 class ListingVisitor(Visitor):
+    """Visitor that collects file names."""
 
     def __init__(self) -> None:
         self.names: list[str] = []
@@ -73,10 +87,12 @@ class ListingVisitor(Visitor):
         self.names.append(file.name)
 
     def visit_directory(self, directory: Directory) -> None:
+        # Only visit files for listing.
         pass
 
 
 class LargestFileVisitor(Visitor):
+    """Visitor that finds the largest file."""
 
     def __init__(self) -> None:
         self.name = ""
@@ -87,6 +103,7 @@ class LargestFileVisitor(Visitor):
             self.name, self.size = file.name, file.size_bytes
 
     def visit_directory(self, directory: Directory) -> None:
+        # Directory nodes do not affect the largest file calculation.
         pass
 
 
