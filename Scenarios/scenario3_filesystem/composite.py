@@ -1,3 +1,14 @@
+"""Scenario 3 - Candidate 1: COMPOSITE  (CHOSEN)
+
+Intent (GoF): compose objects into tree structures to represent part-whole
+hierarchies. Composite lets clients treat individual objects and compositions of
+objects uniformly.
+
+Participants:
+  * Component  -> FileSystemNode (declares size(), count_files(), display(), find())
+  * Leaf       -> File
+  * Composite  -> Directory (holds children; child-management lives here only)
+"""
 from __future__ import annotations
 from abc import ABC, abstractmethod
 

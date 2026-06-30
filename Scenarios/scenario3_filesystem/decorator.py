@@ -1,3 +1,17 @@
+"""Scenario 3 - Candidate 2: DECORATOR  (considered, not chosen)
+
+Intent (GoF): attach additional responsibilities to an object dynamically.
+Decorators provide a flexible alternative to subclassing for extending
+functionality.
+
+Participants:
+  * Component         -> FileSystemNode (size(), describe())
+  * ConcreteComponent -> File
+  * Decorator         -> NodeDecorator (wraps a single component)
+  * ConcreteDecorator -> Compressed, Encrypted, ReadOnly, Versioned
+"""
+
+
 from abc import ABC, abstractmethod
 
 
